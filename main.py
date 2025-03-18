@@ -76,7 +76,7 @@ async def send_response(user_id: int, result: dict | bool) -> None:
                 await asyncio.sleep(10)
         # удаление скачанных и отправленных файлов
         await delete_files(result['grouped_files'], './downloads/')
-    if result is None:
+    elif result is None:
         await bot.send_message(user_id, "⛔️ К сожалению тестовая версия программы не собирает более 100 комментариев")
     else:
         await bot.send_message(user_id, "😰 К сожалению данные не были собраны")
