@@ -80,9 +80,9 @@ def get_page_html(url: str) -> bool | str | None:
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
             # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            for _ in range(5):  # 5 раз
+            for _ in range(3):  # 5 раз
                 actions.send_keys(Keys.PAGE_DOWN).perform()
-                time.sleep(0.1)
+                time.sleep(0.5)
             # Ждем, чтобы новые элементы успели загрузиться
             time.sleep(2)
             # Получаем новую высоту страницы
