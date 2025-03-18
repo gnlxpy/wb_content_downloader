@@ -19,7 +19,8 @@ def get_page_html(url: str) -> bool | str | None:
     # инициализируем драйвер selenium
     try:
         driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
-                           driver_executable_path='/opt/wb_content_downloader/chromedriver')
+                           driver_executable_path='/opt/wb_content_downloader/chromedriver',
+                           version_main=134)
         print('driver', driver)
     except Exception:
         return False
