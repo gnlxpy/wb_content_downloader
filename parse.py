@@ -1,3 +1,4 @@
+import traceback
 import ssl
 import certifi
 import time
@@ -23,6 +24,7 @@ def get_page_html(url: str) -> bool | str | None:
                            version_main=134)
         print('driver', driver)
     except Exception:
+        traceback.print_exc()
         return False
     try:
         # загружаем страницу
@@ -53,6 +55,7 @@ def get_page_html(url: str) -> bool | str | None:
         page_html = driver.page_source
         return page_html
     except Exception:
+        traceback.print_exc()
         return False
     finally:
         driver.quit()

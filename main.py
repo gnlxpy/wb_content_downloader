@@ -102,6 +102,7 @@ async def main():
     """
     asyncio.create_task(background_task())
     await dp.start_polling(bot)
+    print('Bot v0.1 started\n. . .')
 
 
 if __name__ == "__main__":
