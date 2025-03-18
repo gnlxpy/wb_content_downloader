@@ -94,7 +94,7 @@ def get_page_html(url: str) -> bool | str | None:
         # делаем паузу и получаем код страницы
         time.sleep(3)
         page_html = driver.page_source
-        with open(f'./pages_history/page_{url}_{datetime.datetime.now().replace(microsecond=0)}.html', 'w') as f:
+        with open(f'./pages_history/page_{datetime.datetime.now().replace(microsecond=0)}.html', 'w') as f:
             f.write(str(page_html))
         return page_html
     except Exception:
