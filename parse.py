@@ -23,9 +23,13 @@ def get_page_html(url: str) -> bool | str | None:
         options = ChromeOptions()
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-setuid-sandbox")
         driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
                            driver_executable_path='/opt/wb_content_downloader/chromedriver',
                            version_main=134, options=options)
+        driver.set_window_size(1400, 850)
 
         print('driver', driver)
     except Exception:
