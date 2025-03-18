@@ -44,6 +44,8 @@ def get_page_html(url: str) -> bool | str | None:
         state = driver.execute_script("return document.readyState;")
         if state == "complete":
             print("HTML loaded")
+            with open('./page.html', 'w') as f:
+                f.write(str(driver.page_source))
         else:
             print(f"HTML not loaded, state: {state}")
 
