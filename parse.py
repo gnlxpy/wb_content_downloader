@@ -12,6 +12,9 @@ from common import check_group_files, split_dict
 from downloader import main_downloader
 
 
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
+
+
 def get_page_html(url: str) -> bool | str | None:
     """
     Функция получения html страницы
@@ -21,15 +24,19 @@ def get_page_html(url: str) -> bool | str | None:
     # инициализируем драйвер selenium
     try:
         options = ChromeOptions()
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
         options.add_argument("--disable-extensions")
-        options.add_argument("--disable-setuid-sandbox")
+        options.add_argument("--disable-infobars")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument(f"--user-agent={USER_AGENT}")
+
         driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
                            driver_executable_path='/opt/wb_content_downloader/chromedriver',
-                           version_main=134, options=options)
-        driver.set_window_size(1400, 850)
+                           version_main=134, options=options, use_subprocess=False
+                           )
+
+        driver.set_window_size(1200, 800)
 
         print('driver', driver)
     except Exception:
@@ -38,19 +45,27 @@ def get_page_html(url: str) -> bool | str | None:
     try:
         # загружаем страницу
         driver.get(url)
-        time.sleep(10)
-        driver.implicitly_wait(10)
+        time.sleep(15)
 
         state = driver.execute_script("return document.readyState;")
         if state == "complete":
             print("HTML loaded")
-            with open('./page.html', 'w') as f:
-                f.write(str(driver.page_source))
+            error_load = 3
+            while True:
+                try:
+                    sorting__count = driver.find_elements(By.CLASS_NAME, 'sorting__count')
+                    break
+                except Exception:
+                    error_load -= 1
+                    if error_load <= 0:
+                        print("sorting__count NOT loaded")
+                        return False
+                    time.sleep(10)
         else:
             print(f"HTML not loaded, state: {state}")
 
-        sorting_checkbox = driver.find_elements(By.CLASS_NAME, 'sorting__count')
-        sorting_checkbox[1].click()
+        sorting__count[1].click()
+        print("sorting__count clicked")
         time.sleep(2)
 
         # Получаем начальную позицию
