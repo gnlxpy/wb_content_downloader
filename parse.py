@@ -67,7 +67,7 @@ def get_page_html(url: str) -> bool | str | None:
             print(f"HTML not loaded, state: {state}")
 
         print("sorting__count clicked")
-        time.sleep(2)
+        time.sleep(3)
 
         # Получаем начальную позицию
         last_height = driver.execute_script("return document.body.scrollHeight")
@@ -77,7 +77,7 @@ def get_page_html(url: str) -> bool | str | None:
             # Прокручиваем страницу вниз с помощью JavaScript
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             # Ждем, чтобы новые элементы успели загрузиться
-            time.sleep(1.5)
+            time.sleep(3)
             # Получаем новую высоту страницы
             new_height = driver.execute_script("return document.body.scrollHeight")
             if new_height == last_height:
@@ -85,7 +85,7 @@ def get_page_html(url: str) -> bool | str | None:
             last_height = new_height  # Обновляем высоту страницы
 
         # делаем паузу и получаем код страницы
-        time.sleep(2)
+        time.sleep(3)
         page_html = driver.page_source
         return page_html
     except Exception:
