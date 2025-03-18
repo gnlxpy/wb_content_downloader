@@ -101,8 +101,8 @@ async def main():
     Запуск отдельного потока для обработки задач и тг бота
     """
     asyncio.create_task(background_task())
-    await dp.start_polling(bot)
     print('Bot v0.1 started\n. . .')
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":

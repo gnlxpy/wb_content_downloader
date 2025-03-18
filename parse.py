@@ -3,6 +3,7 @@ import ssl
 import certifi
 import time
 import undetected_chromedriver as uc
+from  undetected_chromedriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import re
@@ -19,9 +20,13 @@ def get_page_html(url: str) -> bool | str | None:
     """
     # инициализируем драйвер selenium
     try:
+        options = ChromeOptions()
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
         driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
                            driver_executable_path='/opt/wb_content_downloader/chromedriver',
-                           version_main=134)
+                           version_main=134, options=options)
+
         print('driver', driver)
     except Exception:
         traceback.print_exc()
@@ -31,6 +36,13 @@ def get_page_html(url: str) -> bool | str | None:
         driver.get(url)
         time.sleep(10)
         driver.implicitly_wait(10)
+
+        state = driver.execute_script("return document.readyState;")
+        if state == "complete":
+            print("HTML loaded")
+        else:
+            print(f"HTML not loaded, state: {state}")
+
         sorting_checkbox = driver.find_elements(By.CLASS_NAME, 'sorting__count')
         sorting_checkbox[1].click()
         time.sleep(2)
