@@ -28,11 +28,11 @@ def get_page_html(url: str) -> bool | str | None:
     try:
         options = ChromeOptions()
         options.add_argument("--disable-gpu")
-        # options.add_argument("--disable-extensions")
-        # options.add_argument("--disable-infobars")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-infobars")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        # options.add_argument("--disable-software-rasterizer")
+        options.add_argument("--disable-software-rasterizer")
         # options.add_argument(f"--user-agent={USER_AGENT}")
 
         driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
@@ -40,7 +40,7 @@ def get_page_html(url: str) -> bool | str | None:
                            version_main=134, options=options, use_subprocess=False
                            )
 
-        driver.set_window_size(960, 700)
+        driver.set_window_size(1200, 900)
 
         print('driver', driver)
     except Exception:
