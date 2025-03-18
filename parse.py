@@ -80,7 +80,7 @@ def get_page_html(url: str) -> bool | str | None:
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
             # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            for _ in range(3):  # 5 раз
+            for _ in range(2):
                 actions.send_keys(Keys.PAGE_DOWN).perform()
                 time.sleep(0.5)
             # Ждем, чтобы новые элементы успели загрузиться
@@ -92,7 +92,7 @@ def get_page_html(url: str) -> bool | str | None:
             last_height = new_height  # Обновляем высоту страницы
 
         # делаем паузу и получаем код страницы
-        time.sleep(3)
+        time.sleep()
         page_html = driver.page_source
         with open(f'./pages_history/page_{datetime.datetime.now().replace(microsecond=0)}.html', 'w') as f:
             f.write(str(page_html))
