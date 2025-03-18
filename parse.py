@@ -28,19 +28,19 @@ def get_page_html(url: str) -> bool | str | None:
     try:
         options = ChromeOptions()
         options.add_argument("--disable-gpu")
-        options.add_argument("--disable-extensions")
-        options.add_argument("--disable-infobars")
+        # options.add_argument("--disable-extensions")
+        # options.add_argument("--disable-infobars")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-software-rasterizer")
-        options.add_argument(f"--user-agent={USER_AGENT}")
+        # options.add_argument("--disable-software-rasterizer")
+        # options.add_argument(f"--user-agent={USER_AGENT}")
 
         driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
                            driver_executable_path='/opt/wb_content_downloader/chromedriver',
                            version_main=134, options=options, use_subprocess=False
                            )
 
-        driver.set_window_size(1200, 800)
+        driver.set_window_size(960, 700)
 
         print('driver', driver)
     except Exception:
@@ -70,7 +70,7 @@ def get_page_html(url: str) -> bool | str | None:
             print(f"HTML not loaded, state: {state}")
 
         print("sorting__count clicked")
-        time.sleep(3)
+        time.sleep(5)
 
         # Получаем начальную позицию
         last_height = driver.execute_script("return document.body.scrollHeight")
@@ -80,9 +80,7 @@ def get_page_html(url: str) -> bool | str | None:
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
             # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            for _ in range(2):
-                actions.send_keys(Keys.PAGE_DOWN).perform()
-                time.sleep(0.5)
+            actions.send_keys(Keys.PAGE_DOWN).perform()
             # Ждем, чтобы новые элементы успели загрузиться
             time.sleep(5)
             # Получаем новую высоту страницы
