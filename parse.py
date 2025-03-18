@@ -29,6 +29,7 @@ def get_page_html(url: str) -> bool | str | None:
         options.add_argument("--disable-infobars")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-software-rasterizer")
         options.add_argument(f"--user-agent={USER_AGENT}")
 
         driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
