@@ -84,7 +84,7 @@ def get_page_html(url: str) -> bool | str | None:
                 actions.send_keys(Keys.PAGE_DOWN).perform()
                 time.sleep(0.5)
             # Ждем, чтобы новые элементы успели загрузиться
-            time.sleep(2)
+            time.sleep(5)
             # Получаем новую высоту страницы
             new_height = driver.execute_script("return document.body.scrollHeight")
             if new_height == last_height:
