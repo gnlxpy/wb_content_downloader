@@ -6,6 +6,8 @@ import time
 import undetected_chromedriver as uc
 from  undetected_chromedriver import ChromeOptions
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
 import re
 import asyncio
@@ -72,13 +74,17 @@ def get_page_html(url: str) -> bool | str | None:
 
         # Получаем начальную позицию
         last_height = driver.execute_script("return document.body.scrollHeight")
+        actions = ActionChains(driver)
 
         # Прокручиваем страницу и проверяем, изменился ли размер страницы
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            for _ in range(5):  # 5 раз
+                actions.send_keys(Keys.PAGE_DOWN).perform()
+                time.sleep(0.1)
             # Ждем, чтобы новые элементы успели загрузиться
-            time.sleep(3)
+            time.sleep(2)
             # Получаем новую высоту страницы
             new_height = driver.execute_script("return document.body.scrollHeight")
             if new_height == last_height:
