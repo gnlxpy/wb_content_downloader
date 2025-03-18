@@ -6,7 +6,7 @@ from aiogram.types import Message, InputMediaVideo
 from aiogram.types.input_file import FSInputFile
 from aiogram.filters import CommandStart
 from dotenv import load_dotenv
-from common import delete_files
+from common import delete_files, clear_dir
 from parse import main_parsing_task
 
 
@@ -106,4 +106,5 @@ async def main():
 
 
 if __name__ == "__main__":
+    clear_dir('./downloads')
     asyncio.run(main())

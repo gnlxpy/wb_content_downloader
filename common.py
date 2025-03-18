@@ -85,3 +85,15 @@ async def delete_files(grouped_files, folder_path):
 
     # Запускаем асинхронно
     await asyncio.gather(*tasks)
+
+
+def clear_dir(dir: str):
+    """
+    Очистка папок с временными файлами
+    """
+    # список файлов для очистки
+    files = os.listdir(dir)
+    for file in files:
+        # удаление всех файлов кроме системных гиткип
+        if 'gitkeep' not in file:
+            os.remove(f'{dir}/{file}')
