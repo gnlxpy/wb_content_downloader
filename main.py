@@ -8,6 +8,7 @@ from aiogram.filters import CommandStart
 from dotenv import load_dotenv
 from common import delete_files, clear_dir
 from parse import main_parsing_task
+from aiogram.exceptions import TelegramRetryAfter
 
 
 # Загрузка переменных окружения
@@ -67,7 +68,12 @@ async def send_response(user_id: int, result: dict | bool) -> None:
             media = []
             for file in _list:
                 media.append(InputMediaVideo(media=FSInputFile(f'./downloads/{file}')))
-            await bot.send_media_group(chat_id=user_id, media=media)
+            try:
+                await bot.send_media_group(chat_id=user_id, media=media)
+                await asyncio.sleep(1)
+            except TelegramRetryAfter:
+                print(f"Flood control!")
+                await asyncio.sleep(10)
         # удаление скачанных и отправленных файлов
         await delete_files(result['grouped_files'], './downloads/')
     if result is None:
