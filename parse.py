@@ -46,7 +46,7 @@ def get_page_html(url: str) -> bool | str | None:
     try:
         # загружаем страницу
         driver.get(url)
-        time.sleep(7)
+        time.sleep(15)
 
         state = driver.execute_script("return document.readyState;")
         if state == "complete":
@@ -55,6 +55,7 @@ def get_page_html(url: str) -> bool | str | None:
             while True:
                 try:
                     sorting__count = driver.find_elements(By.CLASS_NAME, 'sorting__count')
+                    sorting__count[1].click()
                     break
                 except Exception:
                     error_load -= 1
@@ -65,7 +66,6 @@ def get_page_html(url: str) -> bool | str | None:
         else:
             print(f"HTML not loaded, state: {state}")
 
-        sorting__count[1].click()
         print("sorting__count clicked")
         time.sleep(2)
 
