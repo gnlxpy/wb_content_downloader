@@ -56,7 +56,7 @@ async def send_response(user_id: int, result: dict | bool) -> None:
     :param result: словарь с данными сбора
     """
     print('user_id', user_id, 'result', result)
-    if result is dict and len(result['grouped_files']) > 0:
+    if result is dict and result['sum_files'] > 0:
         await bot.send_message(chat_id=user_id, text=f"✅Были скачаны {result['sum_files']} файлов\n"
                                                      f"Файлов с ошибками {result['lost_files']}\n"
                                                      f"Не найденные ссылки для скачивания {result['errors_url']}\n"
