@@ -46,7 +46,7 @@ def get_page_html(url: str) -> bool | str | None:
     try:
         # загружаем страницу
         driver.get(url)
-        time.sleep(15)
+        time.sleep(7)
 
         state = driver.execute_script("return document.readyState;")
         if state == "complete":
