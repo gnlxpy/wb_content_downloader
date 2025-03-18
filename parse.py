@@ -137,8 +137,11 @@ def edit_soup(page_html) -> tuple[dict, int] | bool:
             ' ': '',
             ':': '-'
         }
-        for key, value in replace_dict.items():
-            date = date.replace(key, value)
+        if date is not None:
+            for key, value in replace_dict.items():
+                date = date.replace(key, value)
+        else:
+            date = 'non-date'
 
         # поиск ссылки
         url_obj = comment_obj.find('img', alt="video preview")
