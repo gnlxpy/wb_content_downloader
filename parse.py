@@ -28,11 +28,11 @@ def get_page_html(url: str) -> bool | str | None:
     try:
         options = ChromeOptions()
         options.add_argument("--disable-gpu")
-        options.add_argument("--disable-extensions")
-        options.add_argument("--disable-infobars")
+        # options.add_argument("--disable-extensions")
+        # options.add_argument("--disable-infobars")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-software-rasterizer")
+        # options.add_argument("--disable-software-rasterizer")
         options.add_argument(f"--user-agent={USER_AGENT}")
 
         driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
@@ -83,7 +83,7 @@ def get_page_html(url: str) -> bool | str | None:
             # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             actions.send_keys(Keys.PAGE_DOWN).perform()
             # Ждем, чтобы новые элементы успели загрузиться
-            time.sleep(5)
+            time.sleep(7)
             driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
             # Получаем новую высоту страницы
             new_height = driver.execute_script("return document.body.scrollHeight")
