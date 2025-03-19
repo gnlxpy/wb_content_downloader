@@ -4,7 +4,7 @@
 
 ## Описание
 ### Тестовый проект по скачиванию видеороликов из отзывов с известного маркетплейса 
-( Selenium + bs4 + aiogram + ffmpeg )
+Selenium + bs4 + aiogram + ffmpeg
 
 <img src="images/screen.png" alt="Truck Logo" width="500"/>
 
@@ -17,7 +17,7 @@ fast_api_tests.py/
 |-- common.py              # вспомогательные функции по работе с файлами
 |-- config.py              # конфигурация с переменными окружения
 |-- downloads/             # папка для скачивания видеороликов
-|-- chromedriver           # драйвер для Chrome ()
+|-- chromedriver           # драйвер для Chrome (134.0.6998.88)
 ```
 #### \* Для конфигурации необходим файл .env
 ```
