@@ -42,7 +42,7 @@ def get_page_html(url: str) -> bool | str | None:
                            version_main=134, options=options, use_subprocess=False
                            )
 
-        driver.set_window_size(1200, 900)
+        driver.set_window_size(1600, 960)
 
         print('driver', driver)
     except Exception:
@@ -80,13 +80,13 @@ def get_page_html(url: str) -> bool | str | None:
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
             # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            for _ in range(3):
+            for _ in range(2):
                 actions.send_keys(Keys.PAGE_DOWN).perform()
-                time.sleep(0.5)
+                time.sleep(1)
             # Ждем, чтобы новые элементы успели загрузиться
             print('Page scroll . . .')
             driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
-            time.sleep(3)
+            time.sleep(5)
             try:
                 driver.find_element(By.XPATH, "//a[@href='/services/o-nas' and text()='О нас']").click()
                 print('Page loaded!')
