@@ -49,7 +49,7 @@ def get_page_html(url: str) -> bool | str | None:
     try:
         # загружаем страницу
         driver.get(url)
-        time.sleep(15)
+        time.sleep(25)
 
         state = driver.execute_script("return document.readyState;")
         driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
@@ -73,34 +73,30 @@ def get_page_html(url: str) -> bool | str | None:
         print("sorting__count clicked")
         time.sleep(5)
 
-        # Получаем начальную позицию
-        last_height = driver.execute_script("return document.body.scrollHeight")
-        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
+        # Настраиваем параметры прокрутки
+        scroll_pause_time = 1  # Пауза между скроллами
+        max_scrolls = 50  # Максимум попыток скроллинга, чтобы избежать бесконечности
 
-        # Прокручиваем страницу и проверяем, изменился ли размер страницы
-        while True:
-            # Прокручиваем страницу вниз с помощью JavaScript
-            scroll_script = """
-            let totalHeight = 0;
-            let distance = 50;
-            let timer = setInterval(() => {
-                window.scrollBy(0, distance);
-                totalHeight += distance;
-                if (totalHeight >= document.body.scrollHeight){
-                    clearInterval(timer);
-                }
-            }, 50);
-            """
-            driver.execute_script(scroll_script)
+        footer_found = False
+        for i in range(max_scrolls):
+            print(f"Scroll attempt {i + 1}")
+            # Скроллим вниз
+            driver.execute_script("window.scrollBy(0, 500);")
+            time.sleep(scroll_pause_time)
 
-            # Ждем, чтобы новые элементы успели загрузиться
-            time.sleep(3)
-            # Получаем новую высоту страницы
-            new_height = driver.execute_script("return document.body.scrollHeight")
+            try:
+                footer = driver.find_element(By.ID, "footer")
+                if footer.is_displayed():
+                    print("Footer found!")
+                    footer_found = True
+                    break
+            except:
+                pass  # Элемент еще не найден, продолжаем скроллить
+
+        if not footer_found:
+            print("Footer не найден после максимального количества прокруток!")
             driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
-            if new_height == last_height:
-                break
-            last_height = new_height  # Обновляем высоту страницы
+            return False
 
         # делаем паузу и получаем код страницы
         time.sleep(5)
