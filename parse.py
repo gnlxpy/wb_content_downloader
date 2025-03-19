@@ -71,6 +71,7 @@ def get_page_html(url: str) -> bool | str | None:
 
         print("sorting__count clicked")
         time.sleep(5)
+        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
 
         # Получаем начальную позицию
         last_height = driver.execute_script("return document.body.scrollHeight")
@@ -83,13 +84,19 @@ def get_page_html(url: str) -> bool | str | None:
             actions.send_keys(Keys.PAGE_DOWN).perform()
             # Ждем, чтобы новые элементы успели загрузиться
             time.sleep(5)
+            driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
             # Получаем новую высоту страницы
             new_height = driver.execute_script("return document.body.scrollHeight")
             if new_height == last_height:
-                break
+                try:
+                    driver.find_element(By.XPATH, "//a[@href='/services/o-nas' and text()='О нас']").click()
+                    break
+                except Exception:
+                    continue
             last_height = new_height  # Обновляем высоту страницы
 
         # делаем паузу и получаем код страницы
+        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
         time.sleep(5)
         page_html = driver.page_source
         with open(f'./pages_history/page_{datetime.datetime.now().replace(microsecond=0)}.html', 'w') as f:
