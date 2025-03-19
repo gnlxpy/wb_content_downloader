@@ -90,9 +90,10 @@ def get_page_html(url: str) -> bool | str | None:
         # Прокручиваем страницу и проверяем, изменился ли размер страницы
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
-            driver.execute_script("window.scrollBy(0, 250);")
-            # Ждем, чтобы новые элементы успели загрузиться
-            time.sleep(5)
+            for _ in range(5):
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                # Ждем, чтобы новые элементы успели загрузиться
+                time.sleep(5)
             print('Page scroll . . .')
             driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
             # Получаем новую высоту страницы
