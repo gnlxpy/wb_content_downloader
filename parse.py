@@ -108,8 +108,8 @@ def get_page_html(url: str) -> bool | str | None:
             last_height = new_height  # Обновляем высоту страницы
         print('Page scrolled!')
         # делаем паузу и получаем код страницы
+        time.sleep(25)
         driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
-        time.sleep(5)
         page_html = driver.page_source
         with open(f'./pages_history/page_{datetime.datetime.now().replace(microsecond=0)}.html', 'w') as f:
             f.write(str(page_html))
