@@ -75,27 +75,24 @@ def get_page_html(url: str) -> bool | str | None:
         print("sorting__count clicked")
         time.sleep(5)
 
-        scroll_pause_time = 1  # Пауза между скроллами
-        max_scrolls = 500  # Максимум прокруток
-
-        link_locator = (By.XPATH, "//a[@href='/services/o-nas' and text()='О нас']")
-
-        for i in range(max_scrolls):
-            print(f"Scroll attempt {i + 1}")
-
+        actions = ActionChains(driver)
+        # Прокручиваем страницу и проверяем, изменился ли размер страницы
+        while True:
+            # Прокручиваем страницу вниз с помощью JavaScript
+            # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            for _ in range(3):
+                actions.send_keys(Keys.PAGE_DOWN).perform()
+                time.sleep(0.5)
+            # Ждем, чтобы новые элементы успели загрузиться
+            print('Page scroll . . .')
+            driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
+            time.sleep(3)
             try:
-                # Проверяем, стал ли элемент кликабельным
-                element = WebDriverWait(driver, 2).until(
-                    EC.element_to_be_clickable(link_locator)
-                )
-                print("Элемент 'О нас' найден и кликабелен!")
-                break  # Выходим из цикла
-            except:
-                # Элемент пока не кликабелен — продолжаем скроллить
-                driver.execute_script("window.scrollBy(0, 500);")
-                time.sleep(scroll_pause_time)
-        else:
-            print("Элемент 'О нас' не найден после максимального количества прокруток!")
+                driver.find_element(By.XPATH, "//a[@href='/services/o-nas' and text()='О нас']").click()
+                print('Page loaded!')
+                break
+            except Exception:
+                continue
 
         driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
 
