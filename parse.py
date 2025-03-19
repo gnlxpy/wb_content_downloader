@@ -1,4 +1,5 @@
 import datetime
+import os
 import traceback
 import ssl
 import certifi
@@ -203,7 +204,9 @@ def main_parsing_task(message: str):
         result = asyncio.run(main_downloader(files_split))
 
     # проверка файлов с выявлением ошибок и формирование списка выгрузки для тг
-    time.sleep(1)
+    print('listdir', print(len(os.listdir('./downloads'))))
+    time.sleep(5)
+    print('listdir', print(len(os.listdir('./downloads'))))
     result = check_group_files(files_dict.keys(), './downloads')
     result['errors_url'] = errors_url
     return result
