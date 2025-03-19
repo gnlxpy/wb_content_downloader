@@ -28,11 +28,11 @@ def get_page_html(url: str) -> bool | str | None:
     try:
         options = ChromeOptions()
         options.add_argument("--disable-gpu")
-        # options.add_argument("--disable-extensions")
-        # options.add_argument("--disable-infobars")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-infobars")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        # options.add_argument("--disable-software-rasterizer")
+        options.add_argument("--disable-software-rasterizer")
         options.add_argument(f"--user-agent={USER_AGENT}")
 
         driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
@@ -75,18 +75,19 @@ def get_page_html(url: str) -> bool | str | None:
 
         # Получаем начальную позицию
         last_height = driver.execute_script("return document.body.scrollHeight")
-        actions = ActionChains(driver)
+        # actions = ActionChains(driver)
 
         # Прокручиваем страницу и проверяем, изменился ли размер страницы
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
-            # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            actions.send_keys(Keys.PAGE_DOWN).perform()
+            driver.execute_script("window.scrollBy(0, 500);")
             # Ждем, чтобы новые элементы успели загрузиться
             time.sleep(7)
+            print('Page scroll . . .')
             driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
             # Получаем новую высоту страницы
             new_height = driver.execute_script("return document.body.scrollHeight")
+            # делаем проверки загрузки всей страницы
             if new_height == last_height:
                 try:
                     driver.find_element(By.XPATH, "//a[@href='/services/o-nas' and text()='О нас']").click()
@@ -94,7 +95,10 @@ def get_page_html(url: str) -> bool | str | None:
                 except Exception:
                     continue
             last_height = new_height  # Обновляем высоту страницы
-
+        print('Page scrolled!')
+        for _ in range(5):
+            driver.execute_script("window.scrollBy(0, -500);")
+            time.sleep(2)
         # делаем паузу и получаем код страницы
         driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
         time.sleep(5)
@@ -109,7 +113,7 @@ def get_page_html(url: str) -> bool | str | None:
         driver.quit()
 
 
-def edit_soup(page_html) -> tuple[dict, int] | bool:
+def edit_soup(page_html) -> tuple[dict, int] | tuple[bool, None]:
     """
     Обработка полученного html для для формирования списка объектов к загрузке
     :param page_html: html страницы с объектами
@@ -120,7 +124,7 @@ def edit_soup(page_html) -> tuple[dict, int] | bool:
     # получаем комментарии пользователй
     comments_list_obj = soup.find_all('li', class_='comments__item feedback product-feedbacks__block-wrapper')
     if not comments_list_obj:
-        return False
+        return False, None
 
     files_dict, errors_url = {}, 0
     # перебираем комментарии в коде
@@ -159,7 +163,7 @@ def edit_soup(page_html) -> tuple[dict, int] | bool:
         else:
             errors_url += 1
     if len(files_dict) == 0:
-        return False
+        return False, None
     return files_dict, errors_url
 
 
