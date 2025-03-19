@@ -9,6 +9,7 @@ import time
 import undetected_chromedriver as uc
 from  undetected_chromedriver import ChromeOptions
 from selenium.webdriver.common.by import By
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
@@ -23,6 +24,7 @@ load_dotenv()
 
 ua = UserAgent()
 PROXY = os.getenv('PROXY')
+HEADLESS = False
 
 
 def get_page_html(url: str) -> bool | str | None:
@@ -31,6 +33,11 @@ def get_page_html(url: str) -> bool | str | None:
     :param url: ссылка
     :return:
     """
+    if HEADLESS is False:
+        caps = DesiredCapabilities().CHROME
+        caps["pageLoadStrategy"] = "eager"
+    else:
+        caps = None
     # инициализируем драйвер selenium
     try:
         options = ChromeOptions()
@@ -43,11 +50,12 @@ def get_page_html(url: str) -> bool | str | None:
         options.add_argument(f'--proxy-server={PROXY}')
 
         driver = uc.Chrome(
-            headless=False,
+            headless=HEADLESS,
             browser_executable_path='/usr/local/bin/chrome',
             driver_executable_path='/opt/wb_content_downloader/chromedriver',
             version_main=134,
-            options=options, use_subprocess=False
+            options=options, use_subprocess=False,
+            desired_capabilities=caps
            )
 
         driver.set_window_size(1600, 960)
@@ -108,7 +116,7 @@ def get_page_html(url: str) -> bool | str | None:
             last_height = new_height  # Обновляем высоту страницы
         print('Page scrolled!')
         # делаем паузу и получаем код страницы
-        time.sleep(25)
+        time.sleep(40)
         driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
         page_html = driver.page_source
         with open(f'./pages_history/page_{datetime.datetime.now().replace(microsecond=0)}.html', 'w') as f:
