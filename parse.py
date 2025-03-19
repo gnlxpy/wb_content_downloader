@@ -1,29 +1,22 @@
 import datetime
-import os
 import traceback
 import ssl
 import certifi
-from dotenv import load_dotenv
 from fake_useragent import UserAgent
 import time
 import undetected_chromedriver as uc
 from  undetected_chromedriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver import DesiredCapabilities
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
 import re
 import asyncio
 from common import check_group_files, split_dict
 from downloader import main_downloader
-
-
-load_dotenv()
+from config import settings
 
 
 ua = UserAgent()
-PROXY = os.getenv('PROXY')
 HEADLESS = False
 
 
@@ -33,6 +26,7 @@ def get_page_html(url: str) -> bool | str | None:
     :param url: ссылка
     :return:
     """
+    # стратегия загрузки страницы
     if HEADLESS is False:
         caps = DesiredCapabilities().CHROME
         caps["pageLoadStrategy"] = "eager"
@@ -40,6 +34,7 @@ def get_page_html(url: str) -> bool | str | None:
         caps = None
     # инициализируем драйвер selenium
     try:
+        # устанавливаем все настройки
         options = ChromeOptions()
         options.add_argument('--incognito')
         options.add_argument('--disable-application-cache')
@@ -47,17 +42,18 @@ def get_page_html(url: str) -> bool | str | None:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument(f"--user-agent={ua.chrome}")
-        options.add_argument(f'--proxy-server={PROXY}')
+        options.add_argument(f'--proxy-server={settings.PROXY_URL}')
 
+        # создаем объект браузера
         driver = uc.Chrome(
             headless=HEADLESS,
-            browser_executable_path='/usr/local/bin/chrome',
-            driver_executable_path='/opt/wb_content_downloader/chromedriver',
+            browser_executable_path=settings.BROWSER_PATH,
+            driver_executable_path=settings.DRIVER_PATH,
             version_main=134,
             options=options, use_subprocess=False,
             desired_capabilities=caps
            )
-
+        # устанавливаем размер окна
         driver.set_window_size(1600, 960)
 
         print('driver', driver)
@@ -75,6 +71,7 @@ def get_page_html(url: str) -> bool | str | None:
             error_load = 3
             while True:
                 try:
+                    # ищем элемент группировки по видео
                     sorting__count = driver.find_elements(By.CLASS_NAME, 'sorting__count')
                     sorting__count[1].click()
                     break
@@ -89,12 +86,10 @@ def get_page_html(url: str) -> bool | str | None:
 
         print("sorting__count clicked")
         time.sleep(5)
-        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
 
+        # делаем максимально надежный скролл до низа страницы
         # Получаем начальную позицию
         last_height = driver.execute_script("return document.body.scrollHeight")
-        # actions = ActionChains(driver)
-
         # Прокручиваем страницу и проверяем, изменился ли размер страницы
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
@@ -103,7 +98,6 @@ def get_page_html(url: str) -> bool | str | None:
                 # Ждем, чтобы новые элементы успели загрузиться
                 time.sleep(5)
             print('Page scroll . . .')
-            driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
             # Получаем новую высоту страницы
             new_height = driver.execute_script("return document.body.scrollHeight")
             # делаем проверки загрузки всей страницы
@@ -115,9 +109,9 @@ def get_page_html(url: str) -> bool | str | None:
                     continue
             last_height = new_height  # Обновляем высоту страницы
         print('Page scrolled!')
-        # делаем паузу и получаем код страницы
-        time.sleep(40)
-        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
+
+        # делаем большую паузу и получаем код страницы
+        time.sleep(20)
         page_html = driver.page_source
         with open(f'./pages_history/page_{datetime.datetime.now().replace(microsecond=0)}.html', 'w') as f:
             f.write(str(page_html))
@@ -216,4 +210,4 @@ def main_parsing_task(message: str):
 
 
 if __name__ == '__main__':
-    get_page_html('https://www.wildberries.ru/catalog/317653108/feedbacks?imtId=299135624&size=478876299')
+    pass

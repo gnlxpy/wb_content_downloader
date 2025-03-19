@@ -1,27 +1,25 @@
 import asyncio
-import os
 from concurrent.futures import ThreadPoolExecutor
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message, InputMediaVideo
 from aiogram.types.input_file import FSInputFile
 from aiogram.filters import CommandStart
-from dotenv import load_dotenv
 from common import delete_files, clear_dir
 from parse import main_parsing_task
 from aiogram.exceptions import TelegramRetryAfter
+from config import settings
 
 
 # Загрузка переменных окружения
-load_dotenv()
-TOKEN = os.getenv('TG_TOKEN')
+
 URL_PART_LIST = ['wildberries', 'catalog', 'feedbacks', 'https://']
 
 
 # инициализация бота
-bot = Bot(token=TOKEN)
+bot = Bot(token=settings.TG_TOKEN)
 dp = Dispatcher()
 # запуск второго потока и очереди задач
-executor = ThreadPoolExecutor(max_workers=3)
+executor = ThreadPoolExecutor(max_workers=1)
 request_queue = asyncio.Queue()
 
 
