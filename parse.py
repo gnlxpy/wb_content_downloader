@@ -33,7 +33,7 @@ def get_page_html(url: str) -> bool | str | None:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-software-rasterizer")
-        # options.add_argument(f"--user-agent={USER_AGENT}")
+        options.add_argument(f"--user-agent={USER_AGENT}")
 
         driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
                            driver_executable_path='/opt/wb_content_downloader/chromedriver',
@@ -52,6 +52,7 @@ def get_page_html(url: str) -> bool | str | None:
         time.sleep(15)
 
         state = driver.execute_script("return document.readyState;")
+        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
         if state == "complete":
             print("HTML loaded")
             error_load = 3
@@ -74,6 +75,7 @@ def get_page_html(url: str) -> bool | str | None:
 
         # Получаем начальную позицию
         last_height = driver.execute_script("return document.body.scrollHeight")
+        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
         actions = ActionChains(driver)
 
         # Прокручиваем страницу и проверяем, изменился ли размер страницы
@@ -85,6 +87,7 @@ def get_page_html(url: str) -> bool | str | None:
             time.sleep(5)
             # Получаем новую высоту страницы
             new_height = driver.execute_script("return document.body.scrollHeight")
+            driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
             if new_height == last_height:
                 break
             last_height = new_height  # Обновляем высоту страницы
