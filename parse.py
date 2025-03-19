@@ -1,7 +1,9 @@
 import datetime
+import os
 import traceback
 import ssl
 import certifi
+from fake_useragent import UserAgent
 import time
 import undetected_chromedriver as uc
 from  undetected_chromedriver import ChromeOptions
@@ -15,7 +17,8 @@ from common import check_group_files, split_dict
 from downloader import main_downloader
 
 
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
+ua = UserAgent()
+PROXY = os.getenv('PROXY')
 
 
 def get_page_html(url: str) -> bool | str | None:
@@ -33,7 +36,9 @@ def get_page_html(url: str) -> bool | str | None:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-software-rasterizer")
-        options.add_argument(f"--user-agent={USER_AGENT}")
+        options.add_argument(f"--user-agent={ua.chrome}")
+        if PROXY is not None:
+            options.add_argument(f'--proxy-server={PROXY}')
 
         driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
                            driver_executable_path='/opt/wb_content_downloader/chromedriver',
