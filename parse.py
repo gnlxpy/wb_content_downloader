@@ -43,7 +43,7 @@ def get_page_html(url: str) -> bool | str | None:
         options.add_argument(f'--proxy-server={PROXY}')
 
         driver = uc.Chrome(
-            headless=True,
+            headless=False,
             browser_executable_path='/usr/local/bin/chrome',
             driver_executable_path='/opt/wb_content_downloader/chromedriver',
             version_main=134,
@@ -110,7 +110,7 @@ def get_page_html(url: str) -> bool | str | None:
         # делаем паузу и получаем код страницы
         driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
         time.sleep(5)
-        page_html = driver.execute_script("return document.documentElement.outerHTML")
+        page_html = driver.page_source
         with open(f'./pages_history/page_{datetime.datetime.now().replace(microsecond=0)}.html', 'w') as f:
             f.write(str(page_html))
         return page_html
