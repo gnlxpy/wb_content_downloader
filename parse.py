@@ -4,8 +4,10 @@ import ssl
 import certifi
 import time
 import undetected_chromedriver as uc
+from selenium.webdriver.support.wait import WebDriverWait
 from  undetected_chromedriver import ChromeOptions
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
@@ -73,30 +75,29 @@ def get_page_html(url: str) -> bool | str | None:
         print("sorting__count clicked")
         time.sleep(5)
 
-        # Настраиваем параметры прокрутки
         scroll_pause_time = 1  # Пауза между скроллами
-        max_scrolls = 50  # Максимум попыток скроллинга, чтобы избежать бесконечности
+        max_scrolls = 500  # Максимум прокруток
 
-        footer_found = False
+        link_locator = (By.XPATH, "//a[@href='/services/o-nas' and text()='О нас']")
+
         for i in range(max_scrolls):
             print(f"Scroll attempt {i + 1}")
-            # Скроллим вниз
-            driver.execute_script("window.scrollBy(0, 500);")
-            time.sleep(scroll_pause_time)
 
             try:
-                footer = driver.find_element(By.ID, "footer")
-                if footer.is_displayed():
-                    print("Footer found!")
-                    footer_found = True
-                    break
+                # Проверяем, стал ли элемент кликабельным
+                element = WebDriverWait(driver, 2).until(
+                    EC.element_to_be_clickable(link_locator)
+                )
+                print("Элемент 'О нас' найден и кликабелен!")
+                break  # Выходим из цикла
             except:
-                pass  # Элемент еще не найден, продолжаем скроллить
+                # Элемент пока не кликабелен — продолжаем скроллить
+                driver.execute_script("window.scrollBy(0, 500);")
+                time.sleep(scroll_pause_time)
+        else:
+            print("Элемент 'О нас' не найден после максимального количества прокруток!")
 
-        if not footer_found:
-            print("Footer не найден после максимального количества прокруток!")
-            driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
-            return False
+        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
 
         # делаем паузу и получаем код страницы
         time.sleep(5)
