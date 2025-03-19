@@ -53,6 +53,10 @@ def get_page_html(url: str) -> bool | str | None:
         return False
     try:
         # загружаем страницу
+        driver.get('https://whatismyipaddress.com/')
+        time.sleep(15)
+        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
+
         driver.get(url)
         time.sleep(15)
 
@@ -85,9 +89,9 @@ def get_page_html(url: str) -> bool | str | None:
         # Прокручиваем страницу и проверяем, изменился ли размер страницы
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
-            driver.execute_script("window.scrollBy(0, 500);")
+            driver.execute_script("window.scrollBy(0, 250);")
             # Ждем, чтобы новые элементы успели загрузиться
-            time.sleep(7)
+            time.sleep(5)
             print('Page scroll . . .')
             driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
             # Получаем новую высоту страницы
@@ -101,9 +105,6 @@ def get_page_html(url: str) -> bool | str | None:
                     continue
             last_height = new_height  # Обновляем высоту страницы
         print('Page scrolled!')
-        for _ in range(5):
-            driver.execute_script("window.scrollBy(0, -500);")
-            time.sleep(2)
         # делаем паузу и получаем код страницы
         driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
         time.sleep(5)
