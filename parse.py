@@ -75,18 +75,14 @@ def get_page_html(url: str) -> bool | str | None:
         print("sorting__count clicked")
         time.sleep(5)
 
-        actions = ActionChains(driver)
         # Прокручиваем страницу и проверяем, изменился ли размер страницы
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
-            # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            for _ in range(2):
-                actions.send_keys(Keys.PAGE_DOWN).perform()
-                time.sleep(1)
+            driver.execute_script("window.scrollBy(0, 500);")
             # Ждем, чтобы новые элементы успели загрузиться
             print('Page scroll . . .')
+            time.sleep(3)
             driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
-            time.sleep(5)
             try:
                 driver.find_element(By.XPATH, "//a[@href='/services/o-nas' and text()='О нас']").click()
                 print('Page loaded!')
