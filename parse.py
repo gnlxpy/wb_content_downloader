@@ -199,9 +199,9 @@ def main_parsing_task(message: str):
     print('files_dict', files_dict)
 
     # разделение на группы скачивания и запуск асинхронного скачивания роликов
-    files_dict_splitted = split_dict(files_dict)
-    for files_split in files_dict_splitted:
-        result = asyncio.run(main_downloader(files_split))
+    # files_dict_splitted = split_dict(files_dict)
+    # for files_split in files_dict_splitted:
+    asyncio.run(main_downloader(files_dict))
 
     # проверка файлов с выявлением ошибок и формирование списка выгрузки для тг
     print('listdir', print(len(os.listdir('./downloads'))))
