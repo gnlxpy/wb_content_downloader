@@ -4,10 +4,8 @@ import ssl
 import certifi
 import time
 import undetected_chromedriver as uc
-from selenium.webdriver.support.wait import WebDriverWait
 from  undetected_chromedriver import ChromeOptions
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
@@ -51,10 +49,9 @@ def get_page_html(url: str) -> bool | str | None:
     try:
         # загружаем страницу
         driver.get(url)
-        time.sleep(25)
+        time.sleep(15)
 
         state = driver.execute_script("return document.readyState;")
-        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
         if state == "complete":
             print("HTML loaded")
             error_load = 3
@@ -75,22 +72,22 @@ def get_page_html(url: str) -> bool | str | None:
         print("sorting__count clicked")
         time.sleep(5)
 
+        # Получаем начальную позицию
+        last_height = driver.execute_script("return document.body.scrollHeight")
+        actions = ActionChains(driver)
+
         # Прокручиваем страницу и проверяем, изменился ли размер страницы
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
-            driver.execute_script("window.scrollBy(0, 500);")
+            # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            actions.send_keys(Keys.PAGE_DOWN).perform()
             # Ждем, чтобы новые элементы успели загрузиться
-            print('Page scroll . . .')
-            time.sleep(3)
-            driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
-            try:
-                driver.find_element(By.XPATH, "//a[@href='/services/o-nas' and text()='О нас']").click()
-                print('Page loaded!')
+            time.sleep(5)
+            # Получаем новую высоту страницы
+            new_height = driver.execute_script("return document.body.scrollHeight")
+            if new_height == last_height:
                 break
-            except Exception:
-                continue
-
-        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
+            last_height = new_height  # Обновляем высоту страницы
 
         # делаем паузу и получаем код страницы
         time.sleep(5)
