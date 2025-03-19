@@ -58,12 +58,8 @@ def get_page_html(url: str) -> bool | str | None:
         return False
     try:
         # загружаем страницу
-        driver.get('https://whatismyipaddress.com/')
-        time.sleep(15)
-        driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
-
         driver.get(url)
-        time.sleep(15)
+        time.sleep(25)
 
         state = driver.execute_script("return document.readyState;")
         if state == "complete":
