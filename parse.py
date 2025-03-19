@@ -17,8 +17,12 @@ from downloader import main_downloader
 from config import settings
 
 
+# инициализация юзер агента
 ua = UserAgent()
+# режим работы без графики
 HEADLESS = False
+# режим работы с прокси
+PROXY = True
 
 
 def get_page_html(url: str) -> bool | str | None:
@@ -43,7 +47,8 @@ def get_page_html(url: str) -> bool | str | None:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument(f"--user-agent={ua.chrome}")
-        options.add_argument(f'--proxy-server={settings.PROXY_URL}')
+        if PROXY:
+            options.add_argument(f'--proxy-server={settings.PROXY_URL}')
 
         # создаем объект браузера
         driver = uc.Chrome(
