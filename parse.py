@@ -204,9 +204,7 @@ def main_parsing_task(message: str):
     asyncio.run(main_downloader(files_dict))
 
     # проверка файлов с выявлением ошибок и формирование списка выгрузки для тг
-    print('listdir', print(len(os.listdir('./downloads'))))
-    time.sleep(5)
-    print('listdir', print(len(os.listdir('./downloads'))))
+    time.sleep(1)
     result = check_group_files(files_dict.keys(), './downloads')
     result['errors_url'] = errors_url
     return result

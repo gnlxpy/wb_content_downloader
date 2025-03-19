@@ -39,14 +39,14 @@ def check_group_files(file_list, folder_path, max_group_size_mb=50, max_files_pe
             large_files += 1
             continue
         found_files.append((filename, file_size))
+        sum_files += 1
 
-    # Группировка файлов
+    # Группировка файлов по размеру файлов и максимальному числу в сообщении
     grouped_files, current_group, current_group_size = [], [], 0
     for filename, size in found_files:
         if (len(current_group) < max_files_per_group) and (current_group_size + size <= max_group_size_bytes):
             current_group.append(filename)
             current_group_size += size
-            sum_files += 1
         else:
             if current_group:
                 grouped_files.append(current_group)
