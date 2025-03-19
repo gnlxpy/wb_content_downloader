@@ -76,15 +76,25 @@ def get_page_html(url: str) -> bool | str | None:
         # Получаем начальную позицию
         last_height = driver.execute_script("return document.body.scrollHeight")
         driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
-        actions = ActionChains(driver)
 
         # Прокручиваем страницу и проверяем, изменился ли размер страницы
         while True:
             # Прокручиваем страницу вниз с помощью JavaScript
-            # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            actions.send_keys(Keys.PAGE_DOWN).perform()
+            scroll_script = """
+            let totalHeight = 0;
+            let distance = 50;
+            let timer = setInterval(() => {
+                window.scrollBy(0, distance);
+                totalHeight += distance;
+                if (totalHeight >= document.body.scrollHeight){
+                    clearInterval(timer);
+                }
+            }, 50);
+            """
+            driver.execute_script(scroll_script)
+
             # Ждем, чтобы новые элементы успели загрузиться
-            time.sleep(5)
+            time.sleep(3)
             # Получаем новую высоту страницы
             new_height = driver.execute_script("return document.body.scrollHeight")
             driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
