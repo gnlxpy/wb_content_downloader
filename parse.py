@@ -3,6 +3,7 @@ import os
 import traceback
 import ssl
 import certifi
+from dotenv import load_dotenv
 from fake_useragent import UserAgent
 import time
 import undetected_chromedriver as uc
@@ -15,6 +16,9 @@ import re
 import asyncio
 from common import check_group_files, split_dict
 from downloader import main_downloader
+
+
+load_dotenv()
 
 
 ua = UserAgent()
@@ -30,20 +34,21 @@ def get_page_html(url: str) -> bool | str | None:
     # инициализируем драйвер selenium
     try:
         options = ChromeOptions()
+        options.add_argument('--incognito')
+        options.add_argument('--disable-application-cache')
         options.add_argument("--disable-gpu")
-        options.add_argument("--disable-extensions")
-        options.add_argument("--disable-infobars")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-software-rasterizer")
         options.add_argument(f"--user-agent={ua.chrome}")
-        if PROXY is not None:
-            options.add_argument(f'--proxy-server={PROXY}')
+        options.add_argument(f'--proxy-server={PROXY}')
 
-        driver = uc.Chrome(headless=True, browser_executable_path='/usr/local/bin/chrome',
-                           driver_executable_path='/opt/wb_content_downloader/chromedriver',
-                           version_main=134, options=options, use_subprocess=False
-                           )
+        driver = uc.Chrome(
+            headless=True,
+            browser_executable_path='/usr/local/bin/chrome',
+            driver_executable_path='/opt/wb_content_downloader/chromedriver',
+            version_main=134,
+            options=options, use_subprocess=False
+           )
 
         driver.set_window_size(1600, 960)
 
@@ -206,4 +211,4 @@ def main_parsing_task(message: str):
 
 
 if __name__ == '__main__':
-    pass
+    get_page_html('https://www.wildberries.ru/catalog/317653108/feedbacks?imtId=299135624&size=478876299')
