@@ -109,7 +109,7 @@ def get_page_html(url: str) -> bool | str | None:
             # делаем проверки загрузки всей страницы
             if new_height == last_height:
                 try:
-                    driver.find_element(By.XPATH, "//a[@href='/services/o-nas' and text()='О нас']").click()
+                    footer_element = driver.find_element(By.XPATH, "//a[@href='/services/o-nas' and text()='О нас']")
                     break
                 except Exception:
                     continue
