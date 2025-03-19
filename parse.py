@@ -110,7 +110,7 @@ def get_page_html(url: str) -> bool | str | None:
         # делаем паузу и получаем код страницы
         driver.save_screenshot(f'./pages_history/{datetime.datetime.now()}.png')
         time.sleep(5)
-        page_html = driver.page_source
+        page_html = driver.execute_script("return document.documentElement.outerHTML")
         with open(f'./pages_history/page_{datetime.datetime.now().replace(microsecond=0)}.html', 'w') as f:
             f.write(str(page_html))
         return page_html
