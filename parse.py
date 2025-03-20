@@ -12,31 +12,22 @@ from selenium.webdriver import DesiredCapabilities
 from bs4 import BeautifulSoup
 import re
 import asyncio
-from common import check_group_files, split_dict
+from common import check_group_files
 from downloader import main_downloader
 from config import settings
 
 
-# инициализация юзер агента
-ua = UserAgent()
-# режим работы без графики
-HEADLESS = False
-# режим работы с прокси
-PROXY = True
-
-
-def get_page_html(url: str) -> bool | str | None:
-    """
-    Функция получения html страницы
-    :param url: ссылка
-    :return:
-    """
+def init_driver():
     # стратегия загрузки страницы
-    if HEADLESS is False:
+    if settings.BROWSER_HEADLESS is False:
         caps = DesiredCapabilities().CHROME
         caps["pageLoadStrategy"] = "eager"
     else:
         caps = None
+
+    # инициализация юзер агента
+    ua = UserAgent()
+
     # инициализируем драйвер selenium
     try:
         # устанавливаем все настройки
@@ -47,12 +38,12 @@ def get_page_html(url: str) -> bool | str | None:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument(f"--user-agent={ua.chrome}")
-        if PROXY:
+        if settings.PROXY_STATE:
             options.add_argument(f'--proxy-server={settings.PROXY_URL}')
 
         # создаем объект браузера
         driver = uc.Chrome(
-            headless=HEADLESS,
+            headless=settings.BROWSER_HEADLESS,
             browser_executable_path=settings.BROWSER_PATH,
             driver_executable_path=settings.DRIVER_PATH,
             version_main=134,
@@ -61,16 +52,28 @@ def get_page_html(url: str) -> bool | str | None:
            )
         # устанавливаем размер окна
         driver.set_window_size(1600, 960)
-
         print('driver', driver)
+        return driver
     except Exception:
         traceback.print_exc()
+        return False
+
+
+def get_page_html(url: str) -> bool | str | None:
+    """
+    Функция получения html страницы
+    :param url: ссылка
+    :return:
+    """
+    # инициализация браузера
+    driver = init_driver()
+    if driver is False:
         return False
     try:
         # загружаем страницу
         driver.get(url)
         time.sleep(25)
-
+        # проверка статуса загрузки
         state = driver.execute_script("return document.readyState;")
         if state == "complete":
             print("HTML loaded")
@@ -200,7 +203,7 @@ def main_parsing_task(message: str):
         return False
     if len(files_dict) > 100:
         return None
-    print('Собрано отзывов ', len(files_dict))
+    print('Got reviews ', len(files_dict))
     print('files_dict', files_dict)
 
     # разделение на группы скачивания и запуск асинхронного скачивания роликов

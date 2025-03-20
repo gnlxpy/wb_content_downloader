@@ -25,6 +25,8 @@ TG_TOKEN={{ токен телеграм бота }}
 PROXY_URL={{ url proxy сервера в формате http://URL:PORT }}
 BROWSER_PATH={{ глобальный путь до браузера }}
 DRIVER_PATH={{ глобальный путь до chromedriver }}
+BROWSER_HEADLESS=True|False # включение безголового режима браузера
+PROXY_STATE=True|False # использование прокси
 ```
 \** proxy сервер должен работать в режиме аутентификации по ip
 
